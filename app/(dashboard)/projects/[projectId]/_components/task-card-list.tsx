@@ -8,9 +8,16 @@ interface TaskCardListProps {
   deletingTaskId: number | null;
   onEdit: (task: TaskSelect) => void;
   onDelete: (task: TaskSelect) => void;
+  onToggleTask: (taskId: number) => void;
 }
 
-export const TaskCardList = ({ tasks, deletingTaskId, onEdit, onDelete }: TaskCardListProps) => {
+export const TaskCardList = ({
+  tasks,
+  deletingTaskId,
+  onEdit,
+  onDelete,
+  onToggleTask,
+}: TaskCardListProps) => {
   if (tasks.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
@@ -28,6 +35,7 @@ export const TaskCardList = ({ tasks, deletingTaskId, onEdit, onDelete }: TaskCa
           deletingTaskId={deletingTaskId}
           onEdit={onEdit}
           onDelete={onDelete}
+          onToggleTask={onToggleTask}
         />
       ))}
     </div>

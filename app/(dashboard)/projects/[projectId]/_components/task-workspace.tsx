@@ -8,7 +8,7 @@ import { useConfirm } from '@/hooks/use-confirm';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { deleteTask } from '@/actions/task-actions';
+import { deleteTask, toggleTaskStatus } from '@/actions/task-actions';
 import { TaskCardList } from './task-card-list';
 import TaskFormSheet from './task-form-sheet';
 import { TaskTable } from './task-table';
@@ -72,6 +72,25 @@ export const TaskWorkspace = ({ tasks }: TaskWorkspaceProps) => {
     }
   };
 
+  const handleToggleTask = async (taskId: number) => {
+    try {
+      const result = await toggleTaskStatus(taskId);
+      if (!result.success) {
+        toast.error('Failed to goggle the task status');
+        return;
+      }
+      const updatedTask = result.data;
+      if (!updatedTask) {
+        toast.error('Failed to toggle the task status');
+        return;
+      }
+      toast.success(`Task "${updatedTask.name}" status toggled successfully`);
+    } catch (error) {
+      console.error(error);
+      toast.error('Something went wrong');
+    }
+  };
+
   const formKey = editingTask ? `edit-${editingTask.id}` : 'create';
 
   return (
@@ -99,6 +118,7 @@ export const TaskWorkspace = ({ tasks }: TaskWorkspaceProps) => {
           onEdit={openEdit}
           onDelete={handleDelete}
           deletingTaskId={deletingTaskId}
+          onToggleTask={handleToggleTask}
         />
       </div>
       <div className="block md:hidden">
@@ -107,6 +127,7 @@ export const TaskWorkspace = ({ tasks }: TaskWorkspaceProps) => {
           onEdit={openEdit}
           onDelete={handleDelete}
           deletingTaskId={deletingTaskId}
+          onToggleTask={handleToggleTask}
         />
       </div>
 

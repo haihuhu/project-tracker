@@ -17,6 +17,7 @@ interface TaskTableProps {
   deletingTaskId: number | null;
   onEdit: (task: TaskSelect) => void;
   onDelete: (task: TaskSelect) => void;
+  onToggleTask: (taskId: number) => void;
 }
 
 const statusStyles: Record<TaskStatus, string> = {
@@ -40,7 +41,13 @@ const formatDate = (value: Date | string | null | undefined) => {
   });
 };
 
-export const TaskTable = ({ tasks, onEdit, onDelete, deletingTaskId }: TaskTableProps) => {
+export const TaskTable = ({
+  tasks,
+  onEdit,
+  onDelete,
+  deletingTaskId,
+  onToggleTask,
+}: TaskTableProps) => {
   if (tasks.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
@@ -72,9 +79,10 @@ export const TaskTable = ({ tasks, onEdit, onDelete, deletingTaskId }: TaskTable
                 <td className="px-4 py-3 align-top">
                   <span
                     className={cn(
-                      'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                      'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium cursor-pointer',
                       statusStyles[task.status as TaskStatus] ?? 'bg-gray-100 text-gray-800'
                     )}
+                    onClick={() => onToggleTask(task.id)}
                   >
                     {statusLabels[task.status as TaskStatus] ?? task.status}
                   </span>

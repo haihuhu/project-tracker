@@ -12,6 +12,7 @@ interface TaskCardProps {
   deletingTaskId: number | null;
   onEdit: (task: TaskSelect) => void;
   onDelete: (task: TaskSelect) => void;
+  onToggleTask: (taskId: number) => void;
 }
 
 const statusStyles: Record<TaskStatus, string> = {
@@ -35,7 +36,13 @@ const formatDate = (value: Date | string | null | undefined) => {
   });
 };
 
-export const TaskCard = ({ task, deletingTaskId, onEdit, onDelete }: TaskCardProps) => {
+export const TaskCard = ({
+  task,
+  deletingTaskId,
+  onEdit,
+  onDelete,
+  onToggleTask,
+}: TaskCardProps) => {
   return (
     <Card>
       <CardHeader>
@@ -43,9 +50,10 @@ export const TaskCard = ({ task, deletingTaskId, onEdit, onDelete }: TaskCardPro
           <CardTitle className="leading-snug">{task.name}</CardTitle>
           <span
             className={cn(
-              'inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+              'inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium cursor-pointer',
               statusStyles[task.status as TaskStatus] ?? 'bg-gray-100 text-gray-800'
             )}
+            onClick={() => onToggleTask(task.id)}
           >
             {statusLabels[task.status as TaskStatus] ?? task.status}
           </span>

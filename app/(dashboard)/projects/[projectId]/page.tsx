@@ -11,11 +11,11 @@ const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> 
     <>
       <div>
         {/* back to the projects page */}
-        <Link href="/projects">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded mb-4">
+        {/* <Link href="/projects">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded mb-4 cursor-pointer">
             Back to Projects
           </button>
-        </Link>
+        </Link> */}
 
         <p className="text-left text-sm">{projectWithTasks?.name ?? 'No project found'}</p>
 

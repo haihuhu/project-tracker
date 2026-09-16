@@ -175,3 +175,55 @@ export const updateTask = async (
     };
   }
 };
+
+export const toggleTaskStatus = async (taskId: number): Promise<ActionResult<TaskSelect>> => {
+  const userId = await getOrCreateUser();
+  if (!userId) {
+    return {
+      success: false,
+      error: 'Unauthorized',
+    };
+  }
+
+  try {
+    const [task] = await db
+      .select()
+      .from(tasks)
+      .where(and(eq(tasks.id, taskId), eq(tasks.userId, userId)))
+      .limit(1);
+
+    if (!task) {
+      return {
+        success: false,
+        error: 'Task not found',
+      };
+    }
+
+    const [updatedTask] = await db
+      .update(tasks)
+      .set({
+        status: task.status === 'completed' ? 'pending' : 'completed',
+        updatedAt: new Date(),
+      })
+      .where(and(eq(tasks.id, taskId), eq(tasks.userId, userId)))
+      .returning();
+
+    if (!updatedTask) {
+      return {
+        success: false,
+        error: 'Failed to update the task',
+      };
+    }
+    revalidatePath(`/projects/${updatedTask.projectId}`);
+    return {
+      success: true,
+      data: updatedTask,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: 'Something went wrong',
+    };
+  }
+};
