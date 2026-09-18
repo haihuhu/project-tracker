@@ -37,6 +37,7 @@ const MobileSidebar = ({ categoriesWithProjects, unCategorizedProjects }: Sideba
           <Sidebar
             categoriesWithProjects={categoriesWithProjects}
             unCategorizedProjects={unCategorizedProjects}
+            
           />
           <SheetFooter>
             <Button type="submit">Save changes</Button>

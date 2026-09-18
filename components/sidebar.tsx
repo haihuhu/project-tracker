@@ -33,6 +33,7 @@ const Sidebar = ({ categoriesWithProjects, unCategorizedProjects }: SidebarProps
         <SidebarCategories
           categoriesWithProjects={categoriesWithProjects}
           unCategorizedProjects={unCategorizedProjects}
+          
         />
       </div>
     </div>
