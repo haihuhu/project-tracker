@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <div>
             <Navbar />
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">{children}</main>
-            <Toaster />
+            <Toaster richColors position="top-center" duration={2000} theme="dark" />
           </div>
         </body>
       </ClerkProvider>

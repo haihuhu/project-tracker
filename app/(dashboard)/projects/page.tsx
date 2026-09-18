@@ -1,10 +1,9 @@
 import { getCurrentUserWithRelations } from '@/queries/user-queries';
 
-import { redirect } from 'next/navigation';
-import ProjectCreateButton from './_components/project-create-button';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 const ProjectsPage = async () => {
   const user = await getCurrentUserWithRelations();
@@ -14,8 +13,6 @@ const ProjectsPage = async () => {
   }
   return (
     <>
-      {/* create a new project button */}
-
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between mb-8">
           <div className="flex flex-col md:flex-row gap-2 items-center">
@@ -24,7 +21,7 @@ const ProjectsPage = async () => {
             <p className="text-sm text-gray-500"> {user.taskCount} tasks</p>
           </div>
           <Link href="/projects/new-project">
-            <Button className="cursor-pointer" variant="outline" size="sm">
+            <Button className="cursor-pointer" variant="default" size="sm">
               <PlusIcon className="w-4 h-4" />
               New Project
             </Button>

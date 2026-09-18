@@ -1,13 +1,13 @@
 'use server';
 
 import { db } from '@/db';
-import { getOrCreateUser } from '@/lib/auth-service';
-import { ActionResult } from '@/type';
 import { projects, tasks, TaskSelect } from '@/db/schema';
-import { and, eq, inArray, ne } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
-import { TaskInput, taskSchema } from '@/schemas/task-schema';
+import { getOrCreateUser } from '@/lib/auth-service';
 import { isUniqueViolation } from '@/lib/utils';
+import { TaskInput, taskSchema } from '@/schemas/task-schema';
+import { ActionResult } from '@/type';
+import { and, eq, inArray } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 
 export const deleteTask = async (taskId: number): Promise<ActionResult<TaskSelect>> => {
   const userId = await getOrCreateUser();
@@ -157,6 +157,7 @@ export const updateTask = async (
         error: 'Failed to update the task',
       };
     }
+    revalidatePath(`/projects/${updatedTask.projectId}`);
     return {
       success: true,
       data: updatedTask,
@@ -202,7 +203,13 @@ export const toggleTaskStatus = async (taskId: number): Promise<ActionResult<Tas
     const [updatedTask] = await db
       .update(tasks)
       .set({
-        status: task.status === 'completed' ? 'pending' : 'completed',
+        status:
+          task.status === 'pending'
+            ? 'in_progress'
+            : task.status === 'in_progress'
+              ? 'completed'
+              : 'pending',
+
         updatedAt: new Date(),
       })
       .where(and(eq(tasks.id, taskId), eq(tasks.userId, userId)))

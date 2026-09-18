@@ -1,27 +1,34 @@
 'use client';
 
+import { createProject, updateProject } from '@/actions/project-actions';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ProjectInput, projectSchema } from '@/schemas/project-schema';
+import { ProjectProps } from '@/type/type';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { ProjectFormField } from './project-form-field';
-import { Button } from '@/components/ui/button';
-import { FormSelect } from './form-select';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { createProject } from '@/actions/project-actions';
-import CategorySheet from './category-sheet';
-import { CategorySelect } from '@/db/schema';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import CategorySheet from './category-sheet';
+import { FormSelect } from './form-select';
+import { ProjectFormField } from './project-form-field';
+import { DialogClose, DialogFooter } from '@/components/ui/dialog';
 
-interface ProjectFormProps {
+interface CategoryOption {
   categoryId: number;
   categoryName: string;
   projectCount: number;
 }
 
-const ProjectForm = ({ categories }: { categories: ProjectFormProps[] }) => {
+interface ProjectFormProps {
+  categories: CategoryOption[];
+  initialData?: ProjectProps | null;
+  onSuccess?: () => void;
+}
+
+const ProjectForm = ({ categories, initialData, onSuccess }: ProjectFormProps) => {
   const [categorySheetOpen, setCategorySheetOpen] = useState(false); //add category modal state
   const [editingCategory, setEditingCategory] = useState<{
     id: number;
@@ -53,11 +60,17 @@ const ProjectForm = ({ categories }: { categories: ProjectFormProps[] }) => {
     formState: { errors, isSubmitting },
   } = useForm<ProjectInput>({
     resolver: zodResolver(projectSchema),
+    defaultValues: initialData ?? {
+      name: '',
+      description: '',
+      categoryId: '',
+      budget: '',
+    },
   });
 
   const onSubmit = async (data: ProjectInput) => {
     try {
-      const response = await createProject(data);
+      const response = initialData ? await updateProject(initialData.id, data) : await createProject(data);
       if (!response.success) {
         const fieldErrors = response.fieldErrors;
         if (fieldErrors) {
@@ -69,11 +82,15 @@ const ProjectForm = ({ categories }: { categories: ProjectFormProps[] }) => {
         return;
       }
 
-      toast.success('Project created successfully');
-      reset();
+      toast.success(initialData ? 'Project updated successfully' : 'Project created successfully');
+      if (initialData) {
+        onSuccess?.();
+      } else {
+        reset();
+      }
     } catch (error) {
       console.error(error);
-      toast.error('Failed to create project');
+      toast.error(initialData ? 'Failed to update project' : 'Failed to create project');
     }
   };
 
@@ -109,6 +126,7 @@ const ProjectForm = ({ categories }: { categories: ProjectFormProps[] }) => {
                 }))}
                 placeholder="Select category"
                 onEditCategory={(category) => handleEditCategory(category)}
+                initialData={initialData?.categoryId}
               />
             </ProjectFormField>
           </div>
@@ -128,14 +146,28 @@ const ProjectForm = ({ categories }: { categories: ProjectFormProps[] }) => {
         </ProjectFormField>
 
         {/* the submit button and the reset button in the project form */}
-        <div className="flex justify-center items-center mt-4 gap-2">
-          <Button type="submit" variant="default" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create Project'}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => reset()} disabled={isSubmitting}>
-            Reset
-          </Button>
-        </div>
+        <>
+          {initialData ? (
+            <DialogFooter>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Updating...' : 'Update Project'}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => reset()} disabled={isSubmitting}>
+                Reset
+              </Button>
+              <DialogClose render={<Button variant="outline">Cancel</Button>} />
+            </DialogFooter>
+          ) : (
+            <div className="flex justify-center items-center mt-4 gap-2">
+              <Button type="submit" variant="default" disabled={isSubmitting}>
+                {isSubmitting ? 'Creating...' : 'Create Project'}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => reset()} disabled={isSubmitting}>
+                Reset
+              </Button>
+            </div>
+          )}
+        </>
       </form>
     </div>
   );

@@ -78,7 +78,7 @@ const TaskFormSheet = ({ open, onOpenChange, onSuccess, initialData }: TaskFormS
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={onOpenChange} >
       <SheetContent className="p-4">
         <SheetHeader>
           <SheetTitle className="text-2xl font-bold">

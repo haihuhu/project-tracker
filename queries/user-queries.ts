@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { categories, projects, tasks, users } from '@/db/schema';
 import { getOrCreateUser } from '@/lib/auth-service';
 
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq, isNull } from 'drizzle-orm';
 
 export const getCurrentUserWithRelations = async () => {
   const userId = await getOrCreateUser();
@@ -38,5 +38,9 @@ export const getUserCategoriesWithProjects = async () => {
     },
   });
 
-  return categoriesWithProjects;
+  const unCategorizedProjects = await db.query.projects.findMany({
+    where: and(eq(projects.userId, Number(userId)), isNull(projects.categoryId)),
+  });
+
+  return { categories: categoriesWithProjects, unCategorizedProjects };
 };

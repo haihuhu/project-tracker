@@ -1,6 +1,13 @@
 import { deleteCategory } from '@/actions/category-actions';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useConfirm } from '@/hooks/use-confirm';
 import { Pencil, Trash } from 'lucide-react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
@@ -12,6 +19,7 @@ interface FormSelectProps<T extends FieldValues> {
   options: readonly { value: string; label: string; projectCount?: number }[];
   placeholder: string;
   onEditCategory?: (category: { id: number; categoryName: string }) => void;
+  initialData?: number | null;
 }
 
 export const FormSelect = <T extends FieldValues>({
@@ -20,6 +28,7 @@ export const FormSelect = <T extends FieldValues>({
   options,
   placeholder,
   onEditCategory,
+  initialData,
 }: FormSelectProps<T>) => {
   const [ConfirmationDialog, confirm] = useConfirm(
     'Delete Category',
@@ -59,7 +68,11 @@ export const FormSelect = <T extends FieldValues>({
             <Select onValueChange={field.onChange} value={field.value ?? ''}>
               <SelectTrigger className="w-full flex-1">
                 <SelectValue placeholder={placeholder}>
-                  <p className="text-sm font-medium"> {selectedOption?.label ?? placeholder}</p>
+                  <p className="text-sm font-medium">
+                    {initialData
+                      ? options.find((item) => item.value === initialData?.toString())?.label
+                      : (selectedOption?.label ?? placeholder)}
+                  </p>
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -73,14 +86,21 @@ export const FormSelect = <T extends FieldValues>({
                             {projectCount && projectCount > 0 ? (
                               <span className="text-xs text-gray-500">
                                 ({projectCount} project
-                                {projectCount && projectCount > 1 ? 's' : ''} belong to this category)
+                                {projectCount && projectCount > 1 ? 's' : ''} belong to this
+                                category)
                               </span>
                             ) : (
-                              <span className="text-xs text-gray-500">(No projects belong to this category)</span>
+                              <span className="text-xs text-gray-500">
+                                (No projects belong to this category)
+                              </span>
                             )}
                           </span>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(value, projectCount ?? 0)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(value, projectCount ?? 0)}
+                        >
                           <Trash className="size-4 text-red-500" />
                         </Button>
                         <Button
