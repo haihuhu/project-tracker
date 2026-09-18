@@ -1,8 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Sheet,
   SheetClose,
@@ -11,13 +9,11 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet';
+import { SidebarProps } from '@/type/type';
 import { MenuIcon } from 'lucide-react';
 import { useState } from 'react';
 import Sidebar from './sidebar';
-import { ProjectSelect } from '@/db/schema';
-import { SidebarProps } from '@/type/type';
 
 const MobileSidebar = ({ categoriesWithProjects, unCategorizedProjects }: SidebarProps) => {
   const [open, setOpen] = useState(false);
@@ -37,7 +33,7 @@ const MobileSidebar = ({ categoriesWithProjects, unCategorizedProjects }: Sideba
           <Sidebar
             categoriesWithProjects={categoriesWithProjects}
             unCategorizedProjects={unCategorizedProjects}
-            
+            setOpen={() => setOpen(false)}
           />
           <SheetFooter>
             <Button type="submit">Save changes</Button>

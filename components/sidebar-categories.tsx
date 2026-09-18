@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 import ProjectActions from './project-actions';
 
-const SidebarCategories = ({ categoriesWithProjects, unCategorizedProjects }: SidebarProps) => {
+const SidebarCategories = ({ categoriesWithProjects, unCategorizedProjects, setOpen }: SidebarProps) => {
   const [openCategories, setOpenCategories] = useState<number[]>([]);
 
   const toggleCategory = (categoryId: number) => {
@@ -118,7 +118,10 @@ const SidebarCategories = ({ categoriesWithProjects, unCategorizedProjects }: Si
                               key={project.id}
                               variant="ghost"
                               className="truncate rounded-lg py-1.5 pl-9 pr-2 text-xs text-slate-500 transition cursor-pointer hover:bg-indigo-50 hover:text-indigo-600"
-                              onClick={() => router.push(`/projects/${project.id}`)}
+                              onClick={() => {
+                                router.push(`/projects/${project.id}`);
+                                setOpen?.();
+                              }}
                             >
                               <p className="text-left  text-sm overflow-hidden">{project.name}</p>
                             </Button>
@@ -180,7 +183,10 @@ const SidebarCategories = ({ categoriesWithProjects, unCategorizedProjects }: Si
                       <Button
                         variant="ghost"
                         className="truncate rounded-lg py-1.5 pl-9 pr-2 text-xs text-slate-500 transition cursor-pointer hover:bg-indigo-50 hover:text-indigo-600"
-                        onClick={() => router.push(`/projects/${project.id}`)}
+                        onClick={() => {
+                          router.push(`/projects/${project.id}`);
+                          setOpen?.();
+                        }}
                       >
                         <p className="text-left  text-sm overflow-hidden">{project.name}</p>
                       </Button>

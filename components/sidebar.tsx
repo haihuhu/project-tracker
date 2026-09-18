@@ -7,7 +7,7 @@ import { SidebarProps } from '@/type/type';
 import SidebarCategories from './sidebar-categories';
 import { Button } from './ui/button';
 
-const Sidebar = ({ categoriesWithProjects, unCategorizedProjects }: SidebarProps) => {
+const Sidebar = ({ categoriesWithProjects, unCategorizedProjects, setOpen }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -33,7 +33,7 @@ const Sidebar = ({ categoriesWithProjects, unCategorizedProjects }: SidebarProps
         <SidebarCategories
           categoriesWithProjects={categoriesWithProjects}
           unCategorizedProjects={unCategorizedProjects}
-          
+          setOpen={setOpen}
         />
       </div>
     </div>
